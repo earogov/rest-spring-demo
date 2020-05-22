@@ -1,0 +1,129 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/db.main.yaml
+  - changeSet:
+      id: 1
+      author: sa
+      comment: "Create users table"
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(50)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar(50)
+              - column:
+                  name: last_name
+                  type: varchar(50)
+              - column:
+                  name: email
+                  type: varchar(50)
+              - column:
+                  name: authorities
+                  type: varchar(2048)
+  - changeSet:
+      id: 2
+      author: sa
+      comment: "Create authors table"
+      changes:
+        - createTable:
+            tableName: authors
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: full_name
+                  type: varchar(128)
+  - changeSet:
+      id: 3
+      author: sa
+      comment: "Create books table"
+      changes:
+        - createTable:
+            tableName: books
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: isbn
+                  type: varchar(64)
+              - column:
+                  name: title
+                  type: varchar(128)
+              - column:
+                  name: description
+                  type: varchar(2048)
+  - changeSet:
+      id: 4
+      author: sa
+      comment: "Create book_authors table"
+      changes:
+        - createTable:
+            tableName: book_authors
+            columns:
+              - column:
+                  name: book_id
+                  type: BIGINT
+                  autoIncrement: false
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: author_id
+                  type: BIGINT
+                  autoIncrement: false
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+  - changeSet:
+      id: 5
+      author: sa
+      comment: "Create reading sequence"
+      changes:
+        - createSequence:
+            sequenceName: reading_sequence
+            startValue: 10000
+            incrementBy: 1
+            ordered: true
+            cycle: false
+  - changeSet:
+      id: 6
+      author: sa
+      comment: "Run script to populate test database"
+      context: test
+      changes:
+        -  sqlFile:
+             dbms: all
+             encoding: UTF-8
+             endDelimiter: \nGO
+             path: populateDB-test.sql
+             relativeToChangelogFile: true
+             splitStatements: true
+             stripComments: true

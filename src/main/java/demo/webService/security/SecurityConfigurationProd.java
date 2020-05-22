@@ -1,0 +1,38 @@
+package demo.webService.security;
+
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+
+@Configuration
+@EnableWebSecurity
+@Profile("prod")
+@RequiredArgsConstructor
+public class SecurityConfigurationProd extends WebSecurityConfigurerAdapter {
+
+    @NonNull
+    protected final UserRepository userRepository;
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+            .antMatchers("/authors/**").hasAuthority("ROLE_GUEST")
+            .antMatchers("/books/**").hasAuthority("ROLE_GUEST")
+            .antMatchers("/users/**").hasAuthority("ROLE_ADMIN")
+            .and()
+            .formLogin();
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(username -> new CustomUserDetails(userRepository.findOneByUsername(username)))
+            .passwordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder());
+    }
+}
