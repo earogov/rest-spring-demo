@@ -127,3 +127,16 @@ databaseChangeLog:
              relativeToChangelogFile: true
              splitStatements: true
              stripComments: true
+  - changeSet:
+      id: 7
+      author: sa
+      comment: "Run script to populate users table"
+      changes:
+        -  sqlFile:
+             dbms: all
+             encoding: UTF-8
+             endDelimiter: \nGO
+             path: populateDB-user.sql
+             relativeToChangelogFile: true
+             splitStatements: true
+             stripComments: true
